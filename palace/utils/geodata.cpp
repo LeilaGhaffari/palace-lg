@@ -2210,8 +2210,8 @@ std::map<int, std::array<int, 2>> CheckMesh(std::unique_ptr<mfem::Mesh> &orig_me
         }
       }
     }
-    int face, o, e1, e2;
-    orig_mesh->GetBdrElementFace(be, &face, &o);
+    int face, oreint, e1, e2;
+    orig_mesh->GetBdrElementFace(be, &face, &oreint);
     orig_mesh->GetFaceElements(face, &e1, &e2);
 
     // If there are two elements associated with the face on the boundary, then the mesh is
@@ -2240,19 +2240,19 @@ std::map<int, std::array<int, 2>> CheckMesh(std::unique_ptr<mfem::Mesh> &orig_me
       {
         periodic_be = true;
       }
-      int f, o;
-      orig_mesh->GetBdrElementFace(be, &f, &o);
-      if (periodic_be)
-      {
-        bdr_elem_periodic[be] = true;
-      }
-      else
-      {
-        MFEM_VERIFY(face_to_be.find(f) == face_to_be.end(),
-                    "Mesh should not define boundary elements multiple times!");
-      }
-      face_to_be[f] = be;
     }
+    int f, o;
+    orig_mesh->GetBdrElementFace(be, &f, &o);
+    if (periodic_be)
+    {
+      bdr_elem_periodic[be] = true;
+    }
+    else
+    {
+      MFEM_VERIFY(face_to_be.find(f) == face_to_be.end(),
+                  "Mesh should not define boundary elements multiple times!");
+    }
+    face_to_be[f] = be;
   }
 
   if (clean_elem)
@@ -2309,7 +2309,7 @@ std::map<int, std::array<int, 2>> CheckMesh(std::unique_ptr<mfem::Mesh> &orig_me
     int new_nbe_ext = 0, new_nbe_int = 0;
     for (int f = 0; f < orig_mesh->GetNumFaces(); f++)
     {
-      if ((face_to_be.find(f) != face_to_be.end()) || bdr_elem_periodic[face_to_be[f]])
+      if (face_to_be.find(f) != face_to_be.end())
       {
         continue;
       }
